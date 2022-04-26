@@ -1,0 +1,379 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 9,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.7",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "baseQuery": "{}",
+          "collection": "entities",
+          "dtfield": "_created",
+          "groupbyfield": "",
+          "labelfield": "",
+          "queryText": "db.openrpa_instances.aggregate ( \n  [  \n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$_created\", \"name\": \"$name\"\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"value\": {\"$sum\" : 1}\n        \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10}\n ]\n)",
+          "queryType": "timeserie",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.openrpa_instances.aggregate ( \n  [  \n    { \"$match\": {  \"_created\": { \"$gte\" : \"$from\", \"$lte\" : \"$to\" } } },\n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$to\", \"name\": \"$name\"\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"value\": {\"$sum\" : 1}\n        \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10}\n ]\n)",
+          "type": "timeserie",
+          "valueexp": "{\"$sum\": 1}"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Top Executed Workflows",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "total"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.7",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "baseQuery": "{}",
+          "collection": "entities",
+          "dtfield": "_created",
+          "groupbyfield": "",
+          "labelfield": "",
+          "queryText": "db.openrpa_instances.aggregate ( \n  [  \n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$_created\", \"name\": \"$name\",\n        \"runtime\": { \"$subtract\": [ \"$_modified\", \"$_created\" ] }\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"value\": {\"$avg\" : \"$runtime\"}\n        \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10}\n ]\n)",
+          "queryType": "timeserie",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.openrpa_instances.aggregate ( \n  [  \n    { \"$match\": {  \"_created\": { \"$gte\" : \"$from\", \"$lte\" : \"$to\" } } },\n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$to\", \"name\": \"$name\",\n        \"runtime\": { \"$subtract\": [ \"$_modified\", \"$_created\" ] }\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"value\": {\"$avg\" : \"$runtime\"}\n        \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10}\n ]\n)",
+          "type": "timeserie",
+          "valueexp": "{\"$sum\": 1}"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Longest Running Workflows",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "total"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 4,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.7",
+      "targets": [
+        {
+          "baseQuery": "{}",
+          "collection": "entities",
+          "dtfield": "_created",
+          "groupbyfield": "",
+          "labelfield": "",
+          "queryText": "db.openrpa_instances.aggregate ( \n  [  \n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$_created\", \"name\": \"$name\"\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"value\": {\"$sum\" : 1}\n        \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10}, \n    { \"$lookup\": {\n       \"from\": \"users\",\n       \"localField\": \"userid\",\n       \"foreignField\": \"_id\",\n       \"as\": \"user\"\n     } },\n     {\n       \"$unwind\": \"$user\"\n     },\n    {\"$project\": { \n        \"workflowname\": \"$name\",  \"name\": \"$user.name\",  \n        \"username\": \"$user.username\",  \"value\": \"$value\", \"_id\": 0\n    } }    \n ]\n)",
+          "queryType": "table",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.openrpa_instances.aggregate ( \n  [  \n    { \"$match\": {  \"_created\": { \"$gte\" : \"$from\", \"$lte\" : \"$to\" } } },\n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$to\", \"name\": \"$name\"\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"value\": {\"$sum\" : 1}\n        \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10}, \n    { \"$lookup\": {\n       \"from\": \"users\",\n       \"localField\": \"userid\",\n       \"foreignField\": \"_id\",\n       \"as\": \"user\"\n     } },\n     {\n       \"$unwind\": \"$user\"\n     },\n    {\"$project\": { \n        \"workflowname\": \"$name\",  \"name\": \"$user.name\",  \n        \"username\": \"$user.username\",  \"value\": \"$value\", \"_id\": 0\n    } }    \n ]\n)",
+          "type": "table",
+          "valueexp": "{\"$sum\": 1}"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Top Executed Workflows",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 7,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "avg"
+          }
+        ]
+      },
+      "pluginVersion": "7.5.7",
+      "targets": [
+        {
+          "baseQuery": "{}",
+          "collection": "entities",
+          "dtfield": "_created",
+          "groupbyfield": "",
+          "labelfield": "",
+          "queryText": "db.openrpa_instances.aggregate ( \n  [  \n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$_created\", \"name\": \"$name\",\n        \"runtime\": { \"$subtract\": [ \"$_modified\", \"$_created\" ] }\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"max\": {\"$max\" : \"$runtime\"},\n    \t\"value\": {\"$avg\" : \"$runtime\"},\n    \t\"min\": {\"$min\" : \"$runtime\"},\n    \t\"count\": {\"$sum\" : 1}\n       \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10},\n    {\"$project\": { \n        \"name\": \"$name\",\n        \"max\": \"$max\",\n        \"avg\": \"$value\",\n        \"min\": \"$min\",\n        \"count\": \"$count\",\n    \t\"_id\": 0\n    } }\n\n ]\n)",
+          "queryType": "table",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.openrpa_instances.aggregate ( \n  [  \n    { \"$match\": {  \"_created\": { \"$gte\" : \"$from\", \"$lte\" : \"$to\" } } },\n    {\"$project\": { \n        \"userid\": \"$_createdbyid\", \"ts\": \"$to\", \"name\": \"$name\",\n        \"runtime\": { \"$subtract\": [ \"$_modified\", \"$_created\" ] }\n    } },\n    {\"$group\": {\n    \t\"_id\": { \"name\": \"$name\" },\n        \"userid\": {\"$max\" : \"$userid\"},\n        \"name\": {\"$max\" : \"$name\"},\n        \"ts\": {\"$max\" : \"$ts\"},\n    \t\"max\": {\"$max\" : \"$runtime\"},\n    \t\"value\": {\"$avg\" : \"$runtime\"},\n    \t\"min\": {\"$min\" : \"$runtime\"},\n    \t\"count\": {\"$sum\" : 1}\n       \n    }},\n    {\"$sort\":{\"value\": -1}}, {\"$limit\": 10},\n    {\"$project\": { \n        \"name\": \"$name\",\n        \"max\": \"$max\",\n        \"avg\": \"$value\",\n        \"min\": \"$min\",\n        \"count\": \"$count\",\n    \t\"_id\": 0\n    } }\n\n ]\n)",
+          "type": "table",
+          "valueexp": "{\"$sum\": 1}"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Longest Running Workflows",
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Top RPA Workflows",
+  "uid": "TopRPAWorkflows",
+  "version": 2
+}

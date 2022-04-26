@@ -1,0 +1,21 @@
+{
+    "apiVersion": 1,
+    "datasources": [
+        {
+          "name": "OpenFlow",
+          "type": "grafana-openflow-datasource",
+          "access":"proxy",
+          "url": "http://api:3000/grafana",
+          "withCredentials": true,
+          "isDefault": 1,
+          "editable": true,
+          "orgId": 1,
+          "version": 1,
+          "jsonData": {
+            "tlsAuth": false,
+            "tlsAuthWithCACert": false,
+            "oauthPassThru": true
+          }
+        }
+    ]
+}

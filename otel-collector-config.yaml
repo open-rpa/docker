@@ -1,0 +1,21 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+processors:
+  batch:
+extensions:
+  health_check: {}
+  zpages: {}
+exporters:
+  prometheusremotewrite:
+    endpoint: "http://victoriametrics:8428/api/v1/write"
+service:
+  extensions: [health_check, zpages]
+  pipelines:
+    metrics:
+      receivers:
+        - otlp
+      exporters: 
+        - prometheusremotewrite
