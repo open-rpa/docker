@@ -11,7 +11,7 @@ providers:
     # <string> provider type. Default to 'file'
     type: file
     # <bool> disable dashboard deletion
-    disableDeletion: false
+    disableDeletion: true
     # <int> how often Grafana will scan for changed dashboards
     updateIntervalSeconds: 10
     # <bool> allow updating provisioned dashboards from the UI
