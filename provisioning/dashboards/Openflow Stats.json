@@ -4021,35 +4021,14 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "localhost.openiap.io",
-          "value": "46ce24eba84848dc077c9851ceeecdfc"
-        },
         "description": null,
         "error": null,
-        "hide": 0,
-        "includeAll": false,
+        "hide": 2,
         "label": null,
-        "multi": false,
         "name": "instance",
-        "options": [
-          {
-            "selected": false,
-            "text": "all",
-            "value": ".*"
-          },
-          {
-            "selected": true,
-            "text": "localhost.openiap.io",
-            "value": "46ce24eba84848dc077c9851ceeecdfc"
-          }
-        ],
-        "query": "all : .* ,localhost.openiap.io : 46ce24eba84848dc077c9851ceeecdfc",
-        "queryValue": "",
+        "query": "46ce24eba84848dc077c9851ceeecdfc",
         "skipUrlSync": false,
-        "type": "custom"
+        "type": "constant"
       }
     ]
   },
