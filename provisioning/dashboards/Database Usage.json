@@ -1,0 +1,425 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": 29,
+    "links": [],
+    "panels": [
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "$__cell_0",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "decbytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            },
+            "id": 2,
+            "interval": "1y",
+            "maxDataPoints": 20,
+            "options": {
+                "displayMode": "gradient",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "max"
+                    ],
+                    "fields": "",
+                    "values": true
+                },
+                "showUnfilled": true,
+                "text": {}
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{\"collection\": \"$collection\"}",
+                    "collection": "dbusage",
+                    "dtfield": "lastseen",
+                    "groupbyfield": "userid",
+                    "labelfield": "{{name}}",
+                    "queryText": "db.users.aggregate([\r\n  {\"$match\": {\"_type\": \"user\"}},\r\n  {\r\n    \"$project\": {\r\n      \"name\": \"$name\",\r\n      \"value\": \"$dbusage\", \"_id\": 0\r\n    }\r\n  },\r\n  {\r\n    \"$sort\": {\r\n      \"value\": -1\r\n    }\r\n  },\r\n  {\r\n    \"$limit\": 15\r\n  }\r\n])",
+                    "queryType": "table",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": \"$size\"}"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Top users",
+            "type": "bargauge"
+        },
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "$__cell_1",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "dark-blue",
+                                "value": null
+                            },
+                            {
+                                "color": "dark-yellow",
+                                "value": 26214400
+                            },
+                            {
+                                "color": "dark-green",
+                                "value": 104857600
+                            },
+                            {
+                                "color": "dark-red",
+                                "value": 1073741824
+                            }
+                        ]
+                    },
+                    "unit": "decbytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            },
+            "id": 6,
+            "interval": "1y",
+            "maxDataPoints": 20,
+            "options": {
+                "displayMode": "basic",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": true
+                },
+                "showUnfilled": true,
+                "text": {}
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{\"collection\": \"$collection\"}",
+                    "collection": "dbusage",
+                    "dtfield": "_created",
+                    "groupbyfield": "userid",
+                    "labelfield": "{{name}}",
+                    "queryText": "db.users.aggregate([\r\n  {\"$match\": { \"_type\": \"customer\" } }, \r\n  {\"$project\": \r\n    {\"_id\":0,  \"value\": \"$dbusage\", \"name\": \"$name\"}\r\n    },\r\n  {\r\n    \"$sort\": {\r\n      \"value\": -1\r\n    }\r\n  },\r\n  {\r\n    \"$limit\": 50\r\n  }\r\n])",
+                    "queryType": "table",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": \"$size\"}"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Top Customers",
+            "type": "bargauge"
+        },
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": null,
+                        "filterable": false
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "decbytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 13,
+                "w": 12,
+                "x": 0,
+                "y": 9
+            },
+            "id": 4,
+            "options": {
+                "showHeader": true,
+                "sortBy": []
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{\"collection\": \"$collection\"}",
+                    "collection": "dbusage",
+                    "dtfield": "lastseen",
+                    "groupbyfield": "userid",
+                    "labelfield": "{{name}}",
+                    "queryText": "db.users.aggregate([\r\n  {\"$match\": {\"_type\": \"user\"}},\r\n  {\r\n    \"$project\": {\r\n      \"name\": \"$name\",\r\n      \"username\": \"$username\",\r\n      \"company\": \"$company\",\r\n      \"lastseen\": \"$lastseen\",\r\n      \"value\": \"$dbusage\", \"_id\": 0\r\n    }\r\n  },\r\n  {\r\n    \"$sort\": {\r\n      \"value\": -1\r\n    }\r\n  },\r\n  {\r\n    \"$limit\": 75\r\n  }\r\n])",
+                    "queryType": "table",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": \"$size\"}"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Top Users",
+            "type": "table"
+        },
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": null,
+                        "filterable": false
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "decbytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 13,
+                "w": 12,
+                "x": 12,
+                "y": 9
+            },
+            "id": 7,
+            "options": {
+                "showHeader": true
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{}",
+                    "collection": "dbusage",
+                    "dtfield": "_created",
+                    "groupbyfield": "collection",
+                    "labelfield": "{{collection}}",
+                    "queryText": "db.users.aggregate([\r\n  {\"$match\": { \"_type\": \"customer\" } }, \r\n  {\"$project\": \r\n    {\"_id\":0,  \"value\": \"$dbusage\", \"name\": \"$name\"}\r\n    },\r\n  {\r\n    \"$sort\": {\r\n      \"value\": -1\r\n    }\r\n  },\r\n  {\r\n    \"$limit\": 50\r\n  }\r\n])",
+                    "queryType": "table",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": \"$size\"}"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Top Customers",
+            "type": "table"
+        },
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "decbytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 12,
+                "x": 12,
+                "y": 22
+            },
+            "id": 3,
+            "options": {
+                "displayMode": "gradient",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showUnfilled": true,
+                "text": {}
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{}",
+                    "collection": "dbusage",
+                    "dtfield": "_created",
+                    "groupbyfield": "collection",
+                    "labelfield": "{{collection}}",
+                    "queryText": "db.dbusage.aggregate([\r\n  \r\n  {\r\n    \"$addFields\": {\r\n      \"__labelfield\": {\r\n        \"$concat\": [\r\n          \"\",\r\n          {\r\n            \"$toString\": \"$collection\"\r\n          },\r\n          \"\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$group\": {\r\n      \"_id\": {\r\n        \"dt\": {\r\n          \"$subtract\": [\r\n            {\r\n              \"$subtract\": [\r\n                \"$timestamp\",\r\n                \"$to\"\r\n              ]\r\n            },\r\n            {\r\n              \"$mod\": [\r\n                {\r\n                  \"$subtract\": [\r\n                    \"$timestamp\",\r\n                    \"$to\"\r\n                  ]\r\n                },\r\n                \"$intervalMs\"\r\n              ]\r\n            }\r\n          ]\r\n        },\r\n        \"collection\": \"$collection\"\r\n      },\r\n      \"value\": {\r\n        \"$sum\": \"$size\"\r\n      },\r\n      \"ts\": {\r\n        \"$max\": \"$timestamp\"\r\n      },\r\n      \"name\": {\r\n        \"$first\": \"$__labelfield\"\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$sort\": {\r\n      \"value\": -1\r\n    }\r\n  },\r\n  {\r\n    \"$limit\": 15\r\n  }\r\n])",
+                    "queryType": "timeserie",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": \"$size\"}"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Top Collections",
+            "type": "bargauge"
+        },
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": null,
+                        "filterable": false
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "decbytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 13,
+                "w": 12,
+                "x": 12,
+                "y": 31
+            },
+            "id": 5,
+            "options": {
+                "showHeader": true
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{}",
+                    "collection": "dbusage",
+                    "dtfield": "_created",
+                    "groupbyfield": "collection",
+                    "labelfield": "{{collection}}",
+                    "queryText": "db.dbusage.aggregate([\r\n  {\r\n    \"$addFields\": {\r\n      \"__labelfield\": {\r\n        \"$concat\": [\r\n          \"\",\r\n          {\r\n            \"$toString\": \"$collection\"\r\n          },\r\n          \"\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$group\": {\r\n      \"_id\": {\r\n        \"dt\": {\r\n          \"$subtract\": [\r\n            {\r\n              \"$subtract\": [\r\n                \"$timestamp\",\r\n                \"$to\"\r\n              ]\r\n            },\r\n            {\r\n              \"$mod\": [\r\n                {\r\n                  \"$subtract\": [\r\n                    \"$timestamp\",\r\n                    \"$to\"\r\n                  ]\r\n                },\r\n                \"$intervalMs\"\r\n              ]\r\n            }\r\n          ]\r\n        },\r\n        \"collection\": \"$collection\"\r\n      },\r\n      \"value\": {\r\n        \"$sum\": \"$size\"\r\n      },\r\n      \"ts\": {\r\n        \"$max\": \"$timestamp\"\r\n      },\r\n      \"name\": {\r\n        \"$first\": \"$__labelfield\"\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$sort\": {\r\n      \"value\": -1\r\n    }\r\n  },\r\n  {\r\n    \"$unset\": \"_id\"\r\n  },\r\n  {\r\n    \"$limit\": 50\r\n  }\r\n])",
+                    "queryType": "table",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": \"$size\"}"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Top Collections",
+            "type": "table"
+        }
+    ],
+    "refresh": false,
+    "schemaVersion": 27,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-2y",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "utc",
+    "title": "Database Usage",
+    "uid": "dFOg7D6Mk",
+    "version": 20
+}

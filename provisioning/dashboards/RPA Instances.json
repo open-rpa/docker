@@ -1,0 +1,327 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": 27,
+    "iteration": 1651013118245,
+    "links": [],
+    "panels": [
+        {
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": null,
+                        "filterable": false
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 16,
+                "w": 11,
+                "x": 0,
+                "y": 0
+            },
+            "id": 2,
+            "options": {
+                "showHeader": true
+            },
+            "pluginVersion": "7.5.0-13373pre",
+            "targets": [
+                {
+                    "baseQuery": "{\"state\": {\"$in\": [\"running\", \"idle\"]}}",
+                    "collection": "openrpa_instances",
+                    "dtfield": "_created",
+                    "groupbyfield": "",
+                    "labelfield": "",
+                    "queryText": "db.openrpa_instances.aggregate([\r\n    {\"$match\":{\"state\": {\"$in\": \"${query0}\"}}} ,\r\n    {\"$project\": { \"_id\":0, \"name\": \"$name\", \"state\": \"$state\", \"updated\": \"$_modified\" }}\r\n    ])",
+                    "queryType": "table",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": 1}"
+                }
+            ],
+            "title": "Panel Title",
+            "type": "table"
+        },
+        {
+            "aliasColors": {
+                "aborted": "#E02F44",
+                "completed": "#37872D",
+                "failed": "#C4162A",
+                "idle": "#1F60C4",
+                "running": "#E0B400"
+            },
+            "breakPoint": "50%",
+            "cacheTimeout": null,
+            "combine": {
+                "label": "Others",
+                "threshold": 0
+            },
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+            },
+            "fontSize": "80%",
+            "format": "short",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 11,
+                "y": 0
+            },
+            "id": 4,
+            "interval": "265y",
+            "legend": {
+                "show": true,
+                "values": true
+            },
+            "legendType": "Under graph",
+            "links": [],
+            "maxDataPoints": null,
+            "nullPointMode": "connected",
+            "pieType": "pie",
+            "pluginVersion": "7.5.0-13373pre",
+            "strokeWidth": 1,
+            "targets": [
+                {
+                    "baseQuery": "{\"state\": {\"$in\": \"${query0}\"}}",
+                    "collection": "openrpa_instances",
+                    "dtfield": "_created",
+                    "groupbyfield": "state",
+                    "labelfield": "{{state}}",
+                    "queryText": "db.openrpa_instances.aggregate([\r\n  {\r\n    \"$match\": {\r\n      \"state\": {\r\n        \"$in\": \"{running,completed,idle,failed,aborted,loaded}\"\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$addFields\": {\r\n      \"__labelfield\": {\r\n        \"$concat\": [\r\n          \"\",\r\n          {\r\n            \"$toString\": \"$state\"\r\n          },\r\n          \"\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$group\": {\r\n      \"_id\": {\r\n        \"dt\": {\r\n          \"$subtract\": [\r\n            {\r\n              \"$subtract\": [\r\n                \"$_created\",\r\n                \"$to\"\r\n              ]\r\n            },\r\n            {\r\n              \"$mod\": [\r\n                {\r\n                  \"$subtract\": [\r\n                    \"$_created\",\r\n                    \"$to\"\r\n                  ]\r\n                },\r\n                \"$intervalMs\"\r\n              ]\r\n            }\r\n          ]\r\n        },\r\n        \"state\": \"$state\"\r\n      },\r\n      \"value\": {\r\n        \"$sum\": 1\r\n      },\r\n      \"ts\": {\r\n        \"$max\": \"$_created\"\r\n      },\r\n      \"name\": {\r\n        \"$max\": \"$__labelfield\"\r\n      }\r\n    }\r\n  },\r\n  {\r\n    \"$sort\": {\r\n      \"ts\": 1\r\n    }\r\n  }\r\n])",
+                    "queryType": "timeserie",
+                    "rawQuery": true,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": 1}"
+                }
+            ],
+            "title": "Panel Title",
+            "type": "grafana-piechart-panel",
+            "valueName": "current"
+        },
+        {
+            "aliasColors": {
+                "aborted": "semi-dark-red",
+                "completed": "dark-green",
+                "failed": "dark-red",
+                "idle": "dark-blue",
+                "running": "semi-dark-yellow"
+            },
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": null,
+            "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+            },
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 11,
+                "y": 8
+            },
+            "hiddenSeries": false,
+            "id": 6,
+            "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+                "alertThreshold": true
+            },
+            "percentage": false,
+            "pluginVersion": "7.5.0-13373pre",
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+                {
+                    "baseQuery": "{\"state\": {\"$in\": \"${query0}\"}}",
+                    "collection": "openrpa_instances",
+                    "dtfield": "_created",
+                    "groupbyfield": "state",
+                    "labelfield": "{{state}}",
+                    "queryText": "",
+                    "queryType": "timeserie",
+                    "rawQuery": false,
+                    "refId": "A",
+                    "valueexp": "{\"$sum\": 1}"
+                }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Panel Title",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                    "format": "short",
+                    "label": null,
+                    "logBase": 1,
+                    "max": null,
+                    "min": null,
+                    "show": true
+                },
+                {
+                    "format": "short",
+                    "label": null,
+                    "logBase": 1,
+                    "max": null,
+                    "min": null,
+                    "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false,
+                "alignLevel": null
+            }
+        }
+    ],
+    "refresh": "1m",
+    "schemaVersion": 27,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": [
+            {
+                "allValue": null,
+                "current": {
+                    "selected": false,
+                    "text": [
+                        "All"
+                    ],
+                    "value": [
+                        "$__all"
+                    ]
+                },
+                "datasource": null,
+                "definition": "db.openrpa_instances.aggregate([{\"$group\": { \"_id\": \"$state\"}}])",
+                "description": null,
+                "error": null,
+                "hide": 0,
+                "includeAll": true,
+                "label": "state",
+                "multi": true,
+                "name": "query0",
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    {
+                        "selected": false,
+                        "text": "running",
+                        "value": "running"
+                    },
+                    {
+                        "selected": false,
+                        "text": "completed",
+                        "value": "completed"
+                    },
+                    {
+                        "selected": false,
+                        "text": "idle",
+                        "value": "idle"
+                    },
+                    {
+                        "selected": false,
+                        "text": "failed",
+                        "value": "failed"
+                    },
+                    {
+                        "selected": false,
+                        "text": "aborted",
+                        "value": "aborted"
+                    },
+                    {
+                        "selected": false,
+                        "text": "loaded",
+                        "value": "loaded"
+                    }
+                ],
+                "query": "db.openrpa_instances.aggregate([{\"$group\": { \"_id\": \"$state\"}}])",
+                "refresh": 0,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "tagValuesQuery": "",
+                "tags": [],
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+            }
+        ]
+    },
+    "time": {
+        "from": "now-30m",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "RPA Instances",
+    "uid": "P-nyy49Gk",
+    "version": 9
+}
