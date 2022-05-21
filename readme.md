@@ -103,11 +103,11 @@ Next add an wildcard * record for all the services exposed from that instance, a
 
 special note for people using MacOS, you need to update the volume for traefik.  
 If you are gettig error 404 in the browser when trying to connect, and the log/console of traefik is showing errors connecting to the docker pipe,  
-then open `docker-compose-traefik.yml` and go to line 30 and change
+then open `docker-compose-traefik.yml` find the two lines that say ( under traefic and under api )
 ```
 - "//var/run/docker.sock:/var/run/docker.sock:ro"
 ```
-to
+and change them to
 ```
 - "/var/run/docker.sock:/var/run/docker.sock"
 ```
