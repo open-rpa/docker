@@ -101,6 +101,17 @@ Next add an wildcard * record for all the services exposed from that instance, a
 
 #### Troubleshooting tips
 
+special note for people using MacOS, you need to update the volume for traefik.  
+If you are gettig error 404 in the browser when trying to connect, and the log/console of traefik is showing errors connecting to the docker pipe,  
+then open `docker-compose-traefik.yml` and go to line 30 and change
+```
+- "//var/run/docker.sock:/var/run/docker.sock:ro"
+```
+to
+```
+- "/var/run/docker.sock:/var/run/docker.sock"
+```
+
 Rabbitmq can sometimes take a long time to start, have a  patience ( up to a few minutes ) then start logging at logs.
 
 If something is not working, make sure all instances are running, if on windows client simply open the docker UI and expand the project. for everyone else you can use 
