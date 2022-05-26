@@ -23,7 +23,7 @@ services:
       # - "traefik.http.routers.traefik.middlewares=admin"
       # - "traefik.http.middlewares.admin.basicauth.users=admin:$$apr1$$iB.BZjJJ$$FmaZuX35eFCMe5t3a.OqR."
     command:
-      - "--api.insecure=true"
+      #  - "--api.insecure=true" # enable with port 8080 to access dashboard, NEVER enable this for the public
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
@@ -42,6 +42,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      # - "8080:8080" # enable with api.insecure=true to access dashboard, NEVER enable this for the public
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "//var/run/docker.sock:/var/run/docker.sock:ro"
