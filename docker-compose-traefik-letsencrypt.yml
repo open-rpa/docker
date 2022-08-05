@@ -42,6 +42,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    restart: always
       # - "8080:8080" # enable with api.insecure=true to access dashboard, NEVER enable this for the public
     volumes:
       - "./letsencrypt:/letsencrypt"
