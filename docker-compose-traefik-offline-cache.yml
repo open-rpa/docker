@@ -1,0 +1,23 @@
+version: "3.3"
+services:
+# if using prox/remoteurl then open /etc/docker/daemon.json and add the following ( not offline mode ! )
+# {
+#   "registry-mirrors": ["http://localhost:5001"],
+#   "insecure-registries" : ["localhost:5000"]
+# }
+# and then restart docker 
+# sudo systemctl restart docker
+  registry:
+    container_name: "registry"
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`registry.localhost.openiap.io`)"
+      - "traefik.http.routers.registry.entrypoints=web"
+      - "traefik.http.services.registry.loadbalancer.server.port=5000"
+    ports:
+      - 5000:5000
+    image: registry:2
+    volumes: # see options https://docs.docker.com/registry/configuration/
+      - "./docker-registry-config.yml:/etc/docker/registry/config.yml"
+      - "./offline/cache:/var/lib/registry"

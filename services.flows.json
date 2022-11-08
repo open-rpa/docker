@@ -1,0 +1,354 @@
+[
+    {
+        "id": "98cbcdab.ea01e",
+        "type": "http in",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "url": "/catalogue",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 260,
+        "wires": [
+            [
+                "edfc6001.28306"
+            ]
+        ]
+    },
+    {
+        "id": "71ce9e13.e83c1",
+        "type": "http response",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 510,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "9cb99eeb.dcb9f",
+        "type": "debug",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "edfc6001.28306",
+        "type": "function",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "func": "var dt = new Date();\nmsg.payload = {\n    \"name\":\"OpenFlow  catalogue\",\n    \"updated_at\": dt.toISOString(),\n    \"modules\": [\n        {\n            \"id\": \"node-red-contrib-image-output\",\n            \"version\": \"1.0.0\",\n            \"description\": \"Add statusMessage to http request node\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-image-output\"\n        },\n        {\n            \"id\": \"node-red-contrib-http-request-statusmessage\",\n            \"version\": \"1.0.0\",\n            \"description\": \"Add statusMessage to http request node\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-http-request-statusmessage\"\n        },\n        {\n            \"id\": \"node-red-contrib-tagui\",\n            \"version\": \"1.0.30\",\n            \"description\": \"bahbah\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-tagui\"\n        }\n\n    ]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 260,
+        "wires": [
+            [
+                "71ce9e13.e83c1",
+                "9cb99eeb.dcb9f"
+            ]
+        ]
+    },
+    {
+        "id": "e2b23928.0d4c68",
+        "type": "comment",
+        "z": "aa32141d12d67a30",
+        "name": "Static Nodered Catalogue",
+        "info": "",
+        "x": 210,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e759dee6820ccd53",
+        "type": "http in",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "url": "/auth/acl",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "97cecac8f9c5b903",
+                "7be08dd9bb7888f4"
+            ]
+        ]
+    },
+    {
+        "id": "16b964691656c1ac",
+        "type": "http in",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "url": "/auth/client",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 80,
+        "wires": [
+            [
+                "97cecac8f9c5b903",
+                "7be08dd9bb7888f4"
+            ]
+        ]
+    },
+    {
+        "id": "97cecac8f9c5b903",
+        "type": "debug",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "7be08dd9bb7888f4",
+        "type": "http response",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 410,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "2565fda0a0cfd898",
+        "type": "mqtt in",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "topic": "#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "84532dabfc025b3e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 380,
+        "wires": [
+            [
+                "4f72e72982631350"
+            ]
+        ]
+    },
+    {
+        "id": "b05f53e92c32737d",
+        "type": "mqtt out",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "topic": "blahblah",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "84532dabfc025b3e",
+        "x": 380,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "b3a79c8a793ce5d0",
+        "type": "inject",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 440,
+        "wires": [
+            [
+                "b05f53e92c32737d"
+            ]
+        ]
+    },
+    {
+        "id": "4f72e72982631350",
+        "type": "debug",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "topic",
+        "statusType": "msg",
+        "x": 390,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "7e1673ade07de933",
+        "type": "comment",
+        "z": "aa32141d12d67a30",
+        "name": "MQTT broker auth",
+        "info": "",
+        "x": 190,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "86a5bafc762b91d7",
+        "type": "comment",
+        "z": "aa32141d12d67a30",
+        "name": "Test MQTT broker",
+        "info": "",
+        "x": 190,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "dfdfce02364823bf",
+        "type": "inject",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 560,
+        "wires": [
+            [
+                "de51c56a896d3638"
+            ]
+        ]
+    },
+    {
+        "id": "b5eeb31a812f3fa8",
+        "type": "comment",
+        "z": "aa32141d12d67a30",
+        "name": "Configure NodeRED",
+        "info": "",
+        "x": 190,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "de51c56a896d3638",
+        "type": "function",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "func": "var dt = new Date();\nmsg.payload = {\n    \"_id\": \"6368b921ba81c6e80a0907f5\",\n    \"_type\": \"npmrc\",\n    \"_acl\": [\n        {\n            \"rights\": 65535,\n            \"_id\": \"5a1702fa245d9013697656fb\",\n            \"name\": \"admins\"\n        },\n        {\n            \"rights\": 65506,\n            \"_id\": \"5a17f157c4815318c8536c21\",\n            \"name\": \"users\"\n        }\n    ],\n    \"catalogues\": [\n        \"http://services.localhost.openiap.io/catalogue\"\n    ],\n    \"content\": \"registry=http://verdaccio:4873\",\n    \"name\": \"npmrc for all\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 560,
+        "wires": [
+            [
+                "a8adbf5ede48208a"
+            ]
+        ]
+    },
+    {
+        "id": "a8adbf5ede48208a",
+        "type": "api addorupdate",
+        "z": "aa32141d12d67a30",
+        "name": "",
+        "writeconcern": "0",
+        "journal": "false",
+        "entitytype": "",
+        "entitytypetype": "str",
+        "collection": "nodered",
+        "collectiontype": "str",
+        "entities": "payload",
+        "entitiestype": "msg",
+        "uniqeness": "",
+        "uniqenesstype": "str",
+        "resultfield": "",
+        "inputfield": "",
+        "x": 500,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "84532dabfc025b3e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "mqtt",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
