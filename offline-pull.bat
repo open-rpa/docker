@@ -31,3 +31,4 @@ docker image push localhost:5000/openiap/openflow:latest
 docker pull openiap/nodered:latest
 docker image tag openiap/nodered:latest localhost:5000/openiap/nodered:latest
 docker image push localhost:5000/openiap/nodered:latest
+
