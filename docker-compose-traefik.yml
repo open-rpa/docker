@@ -47,6 +47,7 @@ services:
       - "traefik.http.services.api.loadbalancer.server.port=3000"
       - "traefik.frontend.passHostHeader=true"
     image: "openiap/openflow"
+    # entrypoint: sleep infinity
     deploy:
       replicas: 1
     pull_policy: always
@@ -75,6 +76,7 @@ services:
       - socket_rate_limit=true
       - socket_rate_limit_points=1000
       - socket_rate_limit_points_disconnect=2500
+#       - nodered_docker_use_project=true  # uncomment to add nodered to the same docker-compose project ( will breake running docker-compose up -d if any nodereds are running )
 
       - nodered_images=[{"name":"Latest Plain Nodered",
         "image":"openiap/nodered"},{"name":"Latest Puppeteer Nodered",
