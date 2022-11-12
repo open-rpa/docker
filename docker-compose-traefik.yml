@@ -66,6 +66,7 @@ services:
       - protocol=http
       - port=3000
       - domain=localhost.openiap.io
+      - log_with_colors=false
 
       - HTTP_PROXY=
       - HTTPS_PROXY=

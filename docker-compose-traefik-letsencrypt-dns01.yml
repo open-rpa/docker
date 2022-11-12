@@ -100,6 +100,7 @@ services:
       - nodered_docker_entrypoints=web,websecure
       - nodered_docker_certresolver=myresolver
       - domain=localhost.openiap.io
+      - log_with_colors=false
 
       - enable_openflow_amqp=false # enable this to use the openflow amqp, only usefull when you have more than one replicas
       - amqp_prefetch=25
