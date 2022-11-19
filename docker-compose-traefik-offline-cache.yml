@@ -10,11 +10,6 @@ services:
   registry:
     container_name: "registry"
     restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.registry.rule=Host(`registry.localhost.openiap.io`)"
-      - "traefik.http.routers.registry.entrypoints=web"
-      - "traefik.http.services.registry.loadbalancer.server.port=5000"
     ports:
       - 5000:5000
     image: registry:2
