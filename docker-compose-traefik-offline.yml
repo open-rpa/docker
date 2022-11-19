@@ -46,6 +46,8 @@ services:
     restart: always
     volumes:
       - "./mosquitto.conf:/etc/mosquitto/mosquitto.conf"
+    ports:
+      - "1883:1883"
   verdaccio:
     labels:
       - "traefik.enable=true"
@@ -62,6 +64,8 @@ services:
     environment:
       - "VERDACCIO_PORT=4873"
       - "VERDACCIO_PROTOCOL=http"
+    ports:
+      - "4873:4873"
   api:
     labels:
       - "traefik.enable=true"
