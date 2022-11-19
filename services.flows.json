@@ -1,36 +1,44 @@
 [
     {
+        "id": "ee0eca6c355d65e1",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "98cbcdab.ea01e",
         "type": "http in",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
-        "url": "/catalogue",
+        "url": "/catalogue.json",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 180,
-        "y": 260,
+        "x": 250,
+        "y": 320,
         "wires": [
             [
-                "edfc6001.28306"
+                "04b439086a1443f3"
             ]
         ]
     },
     {
         "id": "71ce9e13.e83c1",
         "type": "http response",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 510,
-        "y": 260,
+        "x": 570,
+        "y": 320,
         "wires": []
     },
     {
         "id": "9cb99eeb.dcb9f",
         "type": "debug",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "active": true,
         "tosidebar": true,
@@ -40,51 +48,48 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 530,
-        "y": 220,
+        "x": 590,
+        "y": 280,
         "wires": []
     },
     {
         "id": "edfc6001.28306",
         "type": "function",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
-        "func": "var dt = new Date();\nmsg.payload = {\n    \"name\":\"OpenFlow  catalogue\",\n    \"updated_at\": dt.toISOString(),\n    \"modules\": [\n        {\n            \"id\": \"node-red-contrib-image-output\",\n            \"version\": \"1.0.0\",\n            \"description\": \"Add statusMessage to http request node\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-image-output\"\n        },\n        {\n            \"id\": \"node-red-contrib-http-request-statusmessage\",\n            \"version\": \"1.0.0\",\n            \"description\": \"Add statusMessage to http request node\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-http-request-statusmessage\"\n        },\n        {\n            \"id\": \"node-red-contrib-tagui\",\n            \"version\": \"1.0.30\",\n            \"description\": \"bahbah\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-tagui\"\n        }\n\n    ]\n}\n\nreturn msg;",
+        "func": "var dt = new Date();\nmsg.payload = {\n    \"name\":\"OpenFlow  catalogue\",\n    \"updated_at\": dt.toISOString(),\n    \"modules\": [\n        {\n            \"id\": \"node-red-contrib-catalogue\",\n            \"version\": \"0.0.2\",\n            \"description\": \"Generate nodered catalogue\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-http-request-statusmessage\"\n        },\n        {\n            \"id\": \"node-red-contrib-image-output\",\n            \"version\": \"0.6.3\",\n            \"description\": \"Add statusMessage to http request node\",\n            \"keywords\": [\n                \"node-red\"\n            ],\n            \"updated_at\": dt.toISOString(),\n            \"url\": \"https://www.npmjs.com/package/node-red-contrib-image-output\"\n        }\n    ]\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 260,
+        "x": 420,
+        "y": 280,
         "wires": [
-            [
-                "71ce9e13.e83c1",
-                "9cb99eeb.dcb9f"
-            ]
+            []
         ]
     },
     {
         "id": "e2b23928.0d4c68",
         "type": "comment",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "Static Nodered Catalogue",
         "info": "",
-        "x": 210,
-        "y": 180,
+        "x": 270,
+        "y": 240,
         "wires": []
     },
     {
         "id": "e759dee6820ccd53",
         "type": "http in",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "url": "/auth/acl",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 180,
-        "y": 120,
+        "x": 240,
+        "y": 180,
         "wires": [
             [
                 "97cecac8f9c5b903",
@@ -95,14 +100,14 @@
     {
         "id": "16b964691656c1ac",
         "type": "http in",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "url": "/auth/client",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 180,
-        "y": 80,
+        "x": 240,
+        "y": 140,
         "wires": [
             [
                 "97cecac8f9c5b903",
@@ -113,7 +118,7 @@
     {
         "id": "97cecac8f9c5b903",
         "type": "debug",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "active": true,
         "tosidebar": true,
@@ -123,25 +128,25 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 430,
-        "y": 120,
+        "x": 490,
+        "y": 180,
         "wires": []
     },
     {
         "id": "7be08dd9bb7888f4",
         "type": "http response",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 410,
-        "y": 80,
+        "x": 470,
+        "y": 140,
         "wires": []
     },
     {
         "id": "2565fda0a0cfd898",
         "type": "mqtt in",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "topic": "#",
         "qos": "2",
@@ -151,8 +156,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 170,
-        "y": 380,
+        "x": 230,
+        "y": 440,
         "wires": [
             [
                 "4f72e72982631350"
@@ -162,7 +167,7 @@
     {
         "id": "b05f53e92c32737d",
         "type": "mqtt out",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "topic": "blahblah",
         "qos": "",
@@ -173,14 +178,14 @@
         "correl": "",
         "expiry": "",
         "broker": "84532dabfc025b3e",
-        "x": 380,
-        "y": 440,
+        "x": 440,
+        "y": 500,
         "wires": []
     },
     {
         "id": "b3a79c8a793ce5d0",
         "type": "inject",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "props": [
             {
@@ -198,8 +203,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 180,
-        "y": 440,
+        "x": 240,
+        "y": 500,
         "wires": [
             [
                 "b05f53e92c32737d"
@@ -209,7 +214,7 @@
     {
         "id": "4f72e72982631350",
         "type": "debug",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "active": true,
         "tosidebar": true,
@@ -219,34 +224,34 @@
         "targetType": "msg",
         "statusVal": "topic",
         "statusType": "msg",
-        "x": 390,
-        "y": 380,
+        "x": 450,
+        "y": 440,
         "wires": []
     },
     {
         "id": "7e1673ade07de933",
         "type": "comment",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "MQTT broker auth",
         "info": "",
-        "x": 190,
-        "y": 40,
+        "x": 250,
+        "y": 100,
         "wires": []
     },
     {
         "id": "86a5bafc762b91d7",
         "type": "comment",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "Test MQTT broker",
         "info": "",
-        "x": 190,
-        "y": 320,
+        "x": 250,
+        "y": 380,
         "wires": []
     },
     {
         "id": "dfdfce02364823bf",
         "type": "inject",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "props": [
             {
@@ -264,8 +269,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 180,
-        "y": 560,
+        "x": 240,
+        "y": 620,
         "wires": [
             [
                 "de51c56a896d3638"
@@ -275,26 +280,26 @@
     {
         "id": "b5eeb31a812f3fa8",
         "type": "comment",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "Configure NodeRED",
         "info": "",
-        "x": 190,
-        "y": 520,
+        "x": 250,
+        "y": 580,
         "wires": []
     },
     {
         "id": "de51c56a896d3638",
         "type": "function",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
-        "func": "var dt = new Date();\nmsg.payload = {\n    \"_id\": \"6368b921ba81c6e80a0907f5\",\n    \"_type\": \"npmrc\",\n    \"_acl\": [\n        {\n            \"rights\": 65535,\n            \"_id\": \"5a1702fa245d9013697656fb\",\n            \"name\": \"admins\"\n        },\n        {\n            \"rights\": 65506,\n            \"_id\": \"5a17f157c4815318c8536c21\",\n            \"name\": \"users\"\n        }\n    ],\n    \"catalogues\": [\n        \"http://services.localhost.openiap.io/catalogue\"\n    ],\n    \"content\": \"registry=http://verdaccio:4873\",\n    \"name\": \"npmrc for all\"\n}\n\nreturn msg;",
+        "func": "var dt = new Date();\nmsg.payload = {\n    \"_id\": \"6368b921ba81c6e80a0907f5\",\n    \"_type\": \"npmrc\",\n    \"_acl\": [\n        {\n            \"rights\": 65535,\n            \"_id\": \"5a1702fa245d9013697656fb\",\n            \"name\": \"admins\"\n        },\n        {\n            \"rights\": 65506,\n            \"_id\": \"5a17f157c4815318c8536c21\",\n            \"name\": \"users\"\n        }\n    ],\n    \"catalogues\": [\n    ],\n    \"content\": \"registry=http://verdaccio:4873\",\n    \"name\": \"npmrc for all\"\n}\nmsg.payload.catalogues.push(\"http://services.localhost.openiap.io/catalogue.json\");\n// msg.payload.catalogues.push(\"https://catalogue.nodered.org/catalogue.json\");\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 320,
-        "y": 560,
+        "x": 380,
+        "y": 620,
         "wires": [
             [
                 "a8adbf5ede48208a"
@@ -304,7 +309,7 @@
     {
         "id": "a8adbf5ede48208a",
         "type": "api addorupdate",
-        "z": "aa32141d12d67a30",
+        "z": "ee0eca6c355d65e1",
         "name": "",
         "writeconcern": "0",
         "journal": "false",
@@ -318,10 +323,58 @@
         "uniqenesstype": "str",
         "resultfield": "",
         "inputfield": "",
-        "x": 500,
-        "y": 560,
+        "x": 560,
+        "y": 620,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "04b439086a1443f3",
+        "type": "catalogue catalogue",
+        "z": "ee0eca6c355d65e1",
+        "registry": "http://verdaccio:4873",
+        "registrytype": "str",
+        "update": "update",
+        "updatetype": "msg",
+        "name": "",
+        "x": 420,
+        "y": 320,
+        "wires": [
+            [
+                "71ce9e13.e83c1",
+                "9cb99eeb.dcb9f"
+            ]
+        ]
+    },
+    {
+        "id": "02554ba493c719e6",
+        "type": "inject",
+        "z": "ee0eca6c355d65e1",
+        "name": "update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "update",
+                "v": "true",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 230,
+        "y": 280,
+        "wires": [
+            [
+                "04b439086a1443f3"
+            ]
         ]
     },
     {
