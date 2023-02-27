@@ -1,2 +1,2 @@
 @echo off
-docker-compose -f docker-compose-traefik.yml -p demo pull
+docker compose -f docker-compose.yml -p demo pull

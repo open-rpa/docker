@@ -1,0 +1,112 @@
+version: "3.3"
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb_data:/data/db
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongodb
+    restart: "no"
+    command: >
+      mongosh --host mongodb:27017 --eval 
+      '
+      db = (new Mongo("mongodb:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+  traefik:
+    image: localhost:5000/traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
+  rabbitmq:
+    image: localhost:5000/rabbitmq:3-management
+    restart: always
+  mqtt:
+    image: localhost:5000/iegomez/mosquitto-go-auth
+    restart: always
+    volumes:
+      - "./mosquitto.conf:/etc/mosquitto/mosquitto.conf"
+    ports:
+      - "1883:1883"
+  verdaccio:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.verdaccio.rule=Host(`npm.localhost.openiap.io`)"
+      - "traefik.http.routers.verdaccio.entrypoints=web"
+      - "traefik.http.services.verdaccio.loadbalancer.server.port=4873"
+    image: localhost:5000/verdaccio/verdaccio
+    restart: always
+    volumes:
+      - "verdaccio_storage:/verdaccio/storage"
+      # - "./offline/verdaccio/config:/verdaccio/conf"
+      # - "./offline/verdaccio/plugins:/verdaccio/plugins"
+    environment:
+      - "VERDACCIO_PORT=4873"
+      - "VERDACCIO_PROTOCOL=http"
+    ports:
+      - "4873:4873"
+  api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`localhost.openiap.io`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+      - "traefik.frontend.passHostHeader=true"
+    image: localhost:5000/openiap/openflow
+    deploy:
+      replicas: 1
+    pull_policy: always
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - rabbitmq
+      - mongodb
+      - verdaccio
+    environment:
+      - auto_create_users=true
+      - auto_create_domains=
+      - websocket_package_size=25000
+      - websocket_max_package_count=1048576
+      - protocol=http
+      - port=3000
+      - domain=localhost.openiap.io
+      - log_with_colors=false
+
+      # uncomment below 2 lines, if you have set replicas above 1
+      # - enable_openflow_amqp=true
+      # - amqp_prefetch=25
+      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
+      # - agent_docker_use_project=true  
+
+      - amqp_url=amqp://guest:guest@rabbitmq
+      - mongodb_url=mongodb://mongodb:27017
+      - mongodb_db=openrpa
+
+      - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
+volumes:
+  mongodb_data:
+    driver: local
+  verdaccio_storage:
+    driver: local

@@ -1,0 +1,113 @@
+version: "3.3"
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb_data:/data/db
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongodb
+    restart: "no"
+    command: >
+      mongosh --host mongodb:27017 --eval 
+      '
+      db = (new Mongo("mongodb:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+  traefik:
+    image: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=my@domain.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # middleware redirect
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # global redirect to https
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=web"
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+  api:
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.passHostHeader=true
+      - traefik.http.routers.http-router.entrypoints=websecure
+      - traefik.http.routers.http-router.tls.certresolver=myresolver
+      - traefik.http.routers.http-router.rule=Host(`localhost.openiap.io`)
+      - traefik.http.routers.http-router.service=http-service
+      - traefik.http.services.http-service.loadbalancer.server.port=3000
+      - traefik.http.routers.grpc-router.rule=Host(`grpc.localhost.openiap.io`)
+      - traefik.http.routers.grpc-router.service=grpc-service
+      - traefik.http.routers.grpc-router.entrypoints=websecure
+      - traefik.http.routers.grpc-router.tls.certresolver=myresolver
+      - traefik.http.services.grpc-service.loadbalancer.server.port=50051
+      - traefik.http.services.grpc-service.loadbalancer.server.scheme=h2c
+    image: openiap/openflow
+    deploy:
+      replicas: 1
+    pull_policy: always
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - rabbitmq
+      - mongodb
+    environment:
+      - auto_create_users=true
+      - auto_create_domains=
+      - websocket_package_size=25000
+      - websocket_max_package_count=1048576
+      - protocol=https
+      - port=3000
+      - domain=localhost.openiap.io
+      - log_with_colors=false
+
+      # uncomment below 2 lines, if you have set replicas above 1
+      # - enable_openflow_amqp=true
+      # - amqp_prefetch=25
+      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
+      # - agent_docker_use_project=true  
+
+      - agent_oidc_userinfo_endpoint=http://api:3000/oidc/me
+      - agent_oidc_issuer=https://localhost.openiap.io/oidc
+      - agent_oidc_authorization_endpoint=https://localhost.openiap.io/oidc/auth
+      - agent_oidc_token_endpoint=http://api:3000/oidc/token
+      - agent_docker_entrypoints=web,websecure
+      - agent_docker_certresolver=myresolver
+
+      - amqp_url=amqp://guest:guest@rabbitmq
+      - mongodb_url=mongodb://mongodb:27017/?replicaSet=rs0
+      - mongodb_db=openflow
+
+      - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
+volumes:
+  mongodb_data:
+    driver: local

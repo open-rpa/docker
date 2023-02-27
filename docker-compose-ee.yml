@@ -1,0 +1,164 @@
+version: "3.4"
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb_data:/data/db
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongodb
+    restart: "no"
+    command: >
+      mongosh --host mongodb:27017 --eval 
+      '
+      db = (new Mongo("mongodb:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+  traefik:
+    image: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
+  rabbitmq:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`mq.localhost.openiap.io`)"
+      - "traefik.http.routers.rabbitmq.entrypoints=web"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+    image: rabbitmq:3-management
+    restart: always
+  redis:
+    image: redis
+    command: >
+      --requirepass pass!word2
+  otel-collector:
+    image: otel/opentelemetry-collector
+    command: >
+      - "--config=/conf/otel-collector-config.yaml"
+    volumes:
+      - ./otel-collector-config.yaml:/conf/otel-collector-config.yaml
+  victoriametrics:
+    image: victoriametrics/victoria-metrics
+    depends_on:
+      - otel-collector
+    command:
+      - "--selfScrapeInterval=10s"
+    volumes:
+      - victoriametrics_data:/victoria-metrics-data
+  grafana:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.localhost.openiap.io`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    image: openiap/grafana
+    restart: always
+    depends_on:
+      - api
+    environment:
+    - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+    - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
+    - GF_AUTH_GENERIC_OAUTH_NAME=OpenFlow
+    - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=application
+    - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=secret
+    - GF_AUTH_GENERIC_OAUTH_SCOPES=openid offline_access
+    - GF_AUTH_GENERIC_OAUTH_EMAIL_ATTRIBUTE_PATH=email
+    - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH=role
+    - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT=true
+    - GF_AUTH_GENERIC_OAUTH_AUTH_URL=http://localhost.openiap.io/oidc/auth
+    - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=http://api:3000/oidc/token
+    - GF_AUTH_GENERIC_OAUTH_API_URL=http://api:3000/oidc/me
+    - GF_AUTH_DISABLE_LOGIN_FORM=false
+    - GF_AUTH_OAUTH_AUTO_LOGIN=true
+    - GF_AUTH_ANONYMOUS_ENABLED=false
+    - GF_AUTH_SIGNOUT_REDIRECT_URL=http://localhost.openiap.io/oidc/session/end
+    - GF_USERS_ALLOW_SIGN_UP=false
+    - GF_SERVER_DOMAIN=grafana.localhost.openiap.io
+    - GF_SERVER_ROOT_URL=http://grafana.localhost.openiap.io
+    - GF_SEND_USER_HEADER=false
+    - GF_REPORTING_ENABLED=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+  api:
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.passHostHeader=true
+      - traefik.http.routers.http-router.rule=Host(`localhost.openiap.io`)
+      - traefik.http.routers.http-router.service=http-service
+      - traefik.http.services.http-service.loadbalancer.server.port=3000
+      - traefik.http.routers.grpc-router.rule=Host(`grpc.localhost.openiap.io`)
+      - traefik.http.routers.grpc-router.service=grpc-service
+      - traefik.http.services.grpc-service.loadbalancer.server.port=50051
+      - traefik.http.services.grpc-service.loadbalancer.server.scheme=h2c
+    image: openiap/openflow
+    deploy:
+      replicas: 1
+    pull_policy: always
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - rabbitmq
+      - mongodb
+      - redis
+    environment:
+      - otel_metric_url=http://otel-collector:4317
+      - multi_tenant=false
+      - auto_create_users=true
+      - auto_create_domains=
+      - websocket_package_size=25000
+      - websocket_max_package_count=1048576
+      - protocol=http
+      - port=3000
+      - domain=localhost.openiap.io
+      - log_with_colors=false
+
+      # uncomment below 2 lines, if you have set replicas above 1
+      # - enable_openflow_amqp=true
+      # - amqp_prefetch=25
+      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
+      # - agent_docker_use_project=true  
+
+      - amqp_url=amqp://guest:guest@rabbitmq
+      - mongodb_url=mongodb://mongodb:27017
+      - mongodb_db=openflow
+
+      - agent_oidc_userinfo_endpoint=http://api:3000/oidc/me
+      - agent_oidc_issuer=http://localhost.openiap.io/oidc
+      - agent_oidc_authorization_endpoint=http://localhost.openiap.io/oidc/auth
+      - agent_oidc_token_endpoint=http://api:3000/oidc/token
+
+      - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
+      - license_key=PT09PUJFR0lOIExJQ0VOU0U9PT09CjIKCjIwMjMtMDUtMjdUMTA6NDQ6NDMuMTI4Wgpsb2NhbGhvc3Qub3BlbmlhcC5pbwpNYk1RQlM2QUxUUndjYzVzU1hCRlZmMHBvMnhJN0xwdFlDNGhTUEpOR0RGSUxxRDlMUXQ4SGRyUC9DMkNvUW1yN2ozTUJmV2ZuMlNqWFNENXgwa3pGWHJVcUlIZWtHK2xFZHhjeGxLZE5MbG5mWU10RlpQUElZbEl5VWJVMENTQW5tWnJSdkhSTk9uejcyMkxlbXV2MU9seFZWclRuT3llYXdNeHFsNndMTlFpTXEvaUszbCtoMHVZUm1jK1pCMm4xYU5oTlZ1ZDlYS0VDa3FtM2g5MUwzdFZ0d05HVDdKbzJqb1FQTTc0bGZkMW52VXZ5RU1VbTFxbXBVeUpieko0UjFtZFF2TTIyT1U3ellVWXM0ZFdCQ2UwMFN5R3dXU1JJR1hjSlBwMG5nUDU3SFFIS2kzT3JjTzg3UUV0SmxnMFhuMTRLUXovOVBRbHFtd0VNd1Bnenc9PQo9PT09PUVORCBMSUNFTlNFPT09PT0=
+
+      - cache_store_type=redis
+      - cache_store_redis_host=redis
+      - cache_store_redis_password=pass!word2
+volumes:
+  mongodb_data:
+    driver: local
+  victoriametrics_data:
+    driver: local
+  grafana_data:
+    driver: local

@@ -1,2 +1,2 @@
 @echo off
-docker-compose -f docker-compose-traefik-ee.yml -p demo down --remove-orphans
+docker compose -f docker-compose-ee.yml -p demo down --remove-orphans

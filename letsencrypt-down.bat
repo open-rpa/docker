@@ -1,2 +1,2 @@
 @echo off
-docker-compose -f docker-compose-traefik-letsencrypt.yml -p demo down --remove-orphans
+docker compose -f docker-compose-letsencrypt.yml -p demo down --remove-orphans

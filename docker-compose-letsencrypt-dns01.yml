@@ -1,0 +1,123 @@
+version: "3.3"
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb_data:/data/db
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongodb
+    restart: "no"
+    command: >
+      mongosh --host mongodb:27017 --eval 
+      '
+      db = (new Mongo("mongodb:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+  traefik:
+    image: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+      # - "--log.level=DEBUG"
+
+      - --certificatesresolvers.myresolver.acme.dnschallenge.provider=gcloud
+      - --certificatesresolvers.myresolver.acme.email=my@domain.com
+      - --certificatesresolvers.myresolver.acme.dnschallenge.resolvers=1.1.1.1
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+      # # middleware redirect
+      # - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # # global redirect to https
+      # - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      # - "traefik.http.routers.redirs.entrypoints=web"
+      # - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+    environment:
+      - GCE_PROJECT=apiproject-237214
+      - GCE_SERVICE_ACCOUNT_FILE=/letsencrypt/account.json
+      - DO_POLLING_INTERVAL=5
+      - DO_PROPAGATION_TIMEOUT=120
+      - DO_TTL=30
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
+  rabbitmq:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`mq.localhost.openiap.io`)"
+      - "traefik.http.routers.rabbitmq.entrypoints=websecure"
+      - "traefik.http.routers.rabbitmq.tls.certresolver=myresolver"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+    image: rabbitmq:3-management
+    restart: always
+  api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`localhost.openiap.io`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+      - "traefik.frontend.passHostHeader=true"
+    image: openiap/openflow
+    deploy:
+      replicas: 1
+    pull_policy: always
+    restart: always
+    depends_on:
+      - rabbitmq
+      - mongodb
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - multi_tenant=false
+      - auto_create_users=true
+      - auto_create_domains=
+      - websocket_package_size=25000
+      - websocket_max_package_count=1048576
+      - protocol=https
+      - port=3000
+      - agent_docker_entrypoints=web,websecure
+      - agent_docker_certresolver=myresolver
+      - domain=localhost.openiap.io
+      - log_with_colors=false
+
+      - agent_oidc_userinfo_endpoint=http://api:3000/oidc/me
+      - agent_oidc_issuer=https://localhost.openiap.io/oidc
+      - agent_oidc_authorization_endpoint=https://localhost.openiap.io/oidc/auth
+      - agent_oidc_token_endpoint=http://api:3000/oidc/token
+      - agent_docker_entrypoints=web,websecure
+      - agent_docker_certresolver=myresolver
+
+      # uncomment below 2 lines, if you have set replicas above 1
+      # - enable_openflow_amqp=true
+      # - amqp_prefetch=25
+      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
+      # - agent_docker_use_project=true  
+
+      - amqp_url=amqp://guest:guest@rabbitmq
+      - mongodb_url=mongodb://mongodb:27017
+      - mongodb_db=openrpa
+
+      - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
+volumes:
+  mongodb_data:
+    driver: local

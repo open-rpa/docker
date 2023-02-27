@@ -1,6 +1,6 @@
 @echo off
 if not exist "offline" mkdir offline
-docker-compose -f docker-compose-traefik-offline-cache.yml -p cache up -d
+docker compose -f docker-compose-offline-cache.yml -p cache up -d
 pause
 docker pull mongo
 docker image tag mongo:latest localhost:5000/mongo:latest
@@ -43,8 +43,4 @@ docker image push localhost:5000/openiap/grafana:latest
 docker pull openiap/openflow:latest
 docker image tag openiap/openflow:latest localhost:5000/openiap/openflow:latest
 docker image push localhost:5000/openiap/openflow:latest
-
-docker pull openiap/nodered:latest
-docker image tag openiap/nodered:latest localhost:5000/openiap/nodered:latest
-docker image push localhost:5000/openiap/nodered:latest
 
