@@ -77,6 +77,9 @@ If enabled in the yml file, you can also access
 2. Access RabbitMQ Admin Interface at http://mq.localhost.openiap.io
 3. Each agent started inside openflow, will be listening at username.localhost.openiap.io
 
+#### Using custom port
+This setup does not support using a custom port. Only port 80 or 443 is supported.
+
 #### Using custom domain names
 
 All examples use localhost.openiap.io for domain. This domain points to your localhost ( 127.0.0.1 ) and there for only works on your local machine. To allow other clients to connect, or if you did this on a hosting/cloud server somewhere, you need to use your own DNS to access your instance.
