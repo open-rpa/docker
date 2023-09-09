@@ -1,5 +1,5 @@
-@echo off
-if not exist "offline" mkdir offline
+#!/bin/sh
+mkdir -p offline
 docker compose -f docker-compose-offline-cache.yml -p cache up -d
 pause
 docker pull mongo

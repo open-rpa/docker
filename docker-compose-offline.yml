@@ -93,16 +93,13 @@ services:
       - port=3000
       - domain=localhost.openiap.io
       - log_with_colors=false
-
-      # uncomment below 2 lines, if you have set replicas above 1
-      # - enable_openflow_amqp=true
-      # - amqp_prefetch=25
-      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
-      # - agent_docker_use_project=true  
+      - enable_openflow_amqp=true
 
       - amqp_url=amqp://guest:guest@rabbitmq
       - mongodb_url=mongodb://mongodb:27017
       - mongodb_db=openrpa
+
+      - 'agent_images=[{"name":"Agent", "image":"localhost:5000/openiap/nodeagent", "languages": ["nodejs", "python"]}, {"name":"Agent+Chromium", "image":"localhost:5000/openiap/nodechromiumagent", "chromium": true, "languages": ["nodejs", "python"]}, {"name":"NodeRED", "image":"localhost:5000/openiap/noderedagent", "port": 3000}, {"name":"DotNet 6", "image":"localhost:5000/openiap/dotnetagent", "languages": ["dotnet"]} ]'
 
       - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
 volumes:
