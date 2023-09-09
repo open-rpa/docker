@@ -99,6 +99,10 @@ services:
       - mongodb_url=mongodb://mongodb:27017
       - mongodb_db=openrpa
 
+      # - agent_oidc_userinfo_endpoint=http://api:3000/oidc/me
+      # - agent_oidc_issuer=http://localhost.openiap.io/oidc
+      # - agent_oidc_authorization_endpoint=http://localhost.openiap.io/oidc/auth
+      # - agent_oidc_token_endpoint=http://api:3000/oidc/token
       - 'agent_images=[{"name":"Agent", "image":"localhost:5000/openiap/nodeagent", "languages": ["nodejs", "python"]}, {"name":"Agent+Chromium", "image":"localhost:5000/openiap/nodechromiumagent", "chromium": true, "languages": ["nodejs", "python"]}, {"name":"NodeRED", "image":"localhost:5000/openiap/noderedagent", "port": 3000}, {"name":"DotNet 6", "image":"localhost:5000/openiap/dotnetagent", "languages": ["dotnet"]} ]'
 
       - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
