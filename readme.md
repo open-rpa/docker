@@ -15,7 +15,7 @@ cd docker
 
 The first username and password you try to login as, will be created and made admin. This **cannot** be admin, root or other common administrate account names.
 
-For almost everyone, you will want to start with docker-compose.yml
+For almost everyone, you will want to start with docker-compose.yml ( ie run `normal-up` )
 This gives you a good starting point for testing it on your local machine, and play around with the settings. Once you understand how it works, and you know how to change the domain names it responds too, then you can push this to a server locally or to some cloud provider. If you have a public IP for the solution you can also have a look at [docker-compose-letsencrypt.yml](https://github.com/open-rpa/docker/blob/master/docker-compose-letsencrypt.yml) for a guide on how to use Lets Encrypt for certificates.
 For more complex setups where you don't have public IP or just need access to wildcard certificates there is also an example on how to request Lets Encrypt certificates using DNS01 in the [docker-compose-letsencrypt-dns01.yml](https://github.com/open-rpa/docker/blob/master/docker-compose-letsencrypt-dns01.yml) file.
 
