@@ -13,10 +13,23 @@ git clone https://github.com/open-rpa/docker.git
 cd docker
 ```
 
+
+For almost everyone, you will want to start with docker-compose.yml, you do that by call normal-up.
+on windows
+```
+normal-up.bat
+```
+or linux/macos
+```
+./normal-up.sh
+```
+See [Normal version](#normal-version) for more information.
+
+This gives you a good starting point for testing it on your local machine, and play around with the settings. 
+
 The first username and password you try to login as, will be created and made admin. This **cannot** be admin, root or other common administrate account names.
 
-For almost everyone, you will want to start with docker-compose.yml ( ie run `normal-up` )
-This gives you a good starting point for testing it on your local machine, and play around with the settings. Once you understand how it works, and you know how to change the domain names it responds too, then you can push this to a server locally or to some cloud provider. If you have a public IP for the solution you can also have a look at [docker-compose-letsencrypt.yml](https://github.com/open-rpa/docker/blob/master/docker-compose-letsencrypt.yml) for a guide on how to use Lets Encrypt for certificates.
+Once you understand how it works, and you know how to [change the domain names](#using-custom-domain-names) it responds too, then you can push this to a server locally or to some cloud provider. If you have a public IP for the solution you can also have a look at [docker-compose-letsencrypt.yml](https://github.com/open-rpa/docker/blob/master/docker-compose-letsencrypt.yml) for a guide on how to use Lets Encrypt for certificates.
 For more complex setups where you don't have public IP or just need access to wildcard certificates there is also an example on how to request Lets Encrypt certificates using DNS01 in the [docker-compose-letsencrypt-dns01.yml](https://github.com/open-rpa/docker/blob/master/docker-compose-letsencrypt-dns01.yml) file.
 
 In this video the whole process is showed on ubuntu 18 
@@ -30,36 +43,49 @@ You cannot run multiple of these at the same time, with out a lot of reconfigura
 
 [docker-compose.yml](https://github.com/open-rpa/docker/blob/master/docker-compose.yml) is the "plain" version, with only open source features, running on your localhost using http://localhost.openiap.io 
 
-You start it by running normal-up.bat ( or `docker compose -f docker-compose.yml -p demo up -d` )
-You stop and delete it by running normal-down.bat ( or `docker compose -f docker-compose.yml -p demo down` )
-You can check for updated images using normal-pull.bat ( or `docker compose -f docker-compose.yml -p demo pull` )
+### Normal version on Windows
+You start it by running `normal-up.bat`
+You stop it by running `normal-down.bat`
+You can check for updates using `normal-pull.bat`
+You will need to run `normal-up.bat` after running `normal-pull.bat`
+You can delete all data, by first running `normal-down.bat` and then `remove-data.bat` ( you must stop all agents manually first )
 
-If enabled in the yml file, you can also access
+### Normal version on linux and macos
+You start it by running `./normal-up.sh`
+You stop it by running `./normal-down.sh`
+You can check for updates using `./normal-pull.sh`
+You will need to run `./normal-up.sh` after running `./normal-pull.sh`
+You can delete all data, by first running `./normal-down.sh` and then `./remove-data.sh` ( you must stop all agents manually first )
 
-1. Access MongoDB Web Editor at http://express.localhost.openiap.io
-2. Access RabbitMQ Admin Interface at http://mq.localhost.openiap.io
-3. Each agent started inside openflow, will be listening at username.localhost.openiap.io
+You can access RabbitMQ Admin Interface at http://mq.localhost.openiap.io
+Each agent started inside openflow, will be listening at username.localhost.openiap.io
 
 #### Premium demo version
 
 [docker-compose-ee.yml](https://github.com/open-rpa/docker/blob/master/docker-compose-ee.yml) is a demo of the premium features. running on your localhost using http://localhost.openiap.io 
 This version cannot run with other domains, without a valid license
 
-You start it by running ee-up.bat ( or `docker compose -f docker-compose-ee.yml -p demo up -d` )
-You stop and delete it by running ee-down.bat ( or `docker compose -f docker-compose-ee.yml -p demo down` )
-You can check for updated images using ee-pull.bat ( or `docker compose -f docker-compose-ee.yml -p demo pull` )
+### Premium version on Windows
+You start it by running `ee-up.bat`
+You stop and delete it by running `ee-down.bat`
+You can check for updated images using `ee-pull.bat`
+You can delete all data, by first running `ee-down.bat` and then `remove-data.bat` ( you must stop all agents manually first )
 
-To enabled logging into Grafana you first need login to OpenFlow as admin, and go to OAuthClients and add a new client. Give it the name Grafana, and accept all default values, then click save. Then you can access grafana at http://grafana.localhost.openiap.io 
+### Premium version on linux and macos
+You start it by running `./ee-up.sh`
+You stop and delete it by running `./ee-down.sh`
+You can check for updated images using `./ee-pull.sh`
+You can delete all data, by first running `./ee-down.sh` and then `remove-data.bat` ( you must stop all agents manually first )
+
+Then you can access grafana at http://grafana.localhost.openiap.io 
 After signing in to grafana you can access a few sample dashboards by going to Manage
 ![image-20220426224845440](C:\openiap\docker\grafana-manage.png)  
 
 If enabled in the yml file, you can also access
 
 1. Access Grafana at http://grafana.localhost.openiap.io
-2. Access MongoDB Web Editor at http://express.localhost.openiap.io 
-3. Access RabbitMQ Admin Interface at http://mq.localhost.openiap.io
-4. Access Redis inspector at http://redis.localhost.openiap.io
-5. Each agent started inside openflow, will be listening at username.localhost.openiap.io
+2. Access RabbitMQ Admin Interface at http://mq.localhost.openiap.io
+3. Each agent started inside openflow, will be listening at username.localhost.openiap.io
 
 #### Openflow with SSL using lets enrypt
 
