@@ -1,0 +1,194 @@
+version: "3.3"
+services:
+  traefik:
+    image: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
+  mongodb1:
+    image: mongo
+    restart: always
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb1_data:/data/db
+  mongosetup1:
+    image: mongo
+    depends_on:
+      - mongodb1
+    restart: "no"
+    command: >
+      mongosh --host mongodb1:27017 --eval 
+      '
+      db = (new Mongo("mongodb1:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb1:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+  rabbitmq1:
+    image: rabbitmq
+    restart: always
+  api1:
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.passHostHeader=true
+      - traefik.http.routers.http-router1.entrypoints=web
+      - traefik.http.routers.http-router1.rule=Host(`localhost.openiap.io`)
+      - traefik.http.routers.http-router1.service=http-service1
+      - traefik.http.services.http-service1.loadbalancer.server.port=3000
+      - traefik.http.routers.grpc-router1.rule=Host(`grpc.localhost.openiap.io`)
+      - traefik.http.routers.grpc-router1.service=grpc-service1
+      - traefik.http.routers.grpc-router1.entrypoints=web
+      - traefik.http.services.grpc-service1.loadbalancer.server.port=50051
+      - traefik.http.services.grpc-service1.loadbalancer.server.scheme=h2c
+    image: openiap/openflow:edge
+    # ports:
+    #   - "5858:5858"
+    deploy:
+      replicas: 1
+    pull_policy: always
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - rabbitmq1
+      - mongodb1
+    environment:
+      - auto_create_users=true
+      - auto_create_domains=
+      - websocket_package_size=25000
+      - websocket_max_package_count=1048576
+      - protocol=http
+      - port=3000
+      - domain=localhost.openiap.io
+      - log_with_colors=false
+      - api_ws_url=ws://localhost.openiap.io
+      - agent_apiurl=grpc://api1:50051
+      - agent_grpc_apihost=api1
+      - agent_ws_apihost=api1
+
+      # uncomment below 2 lines, if you have set replicas above 1
+      # - enable_openflow_amqp=true
+      # - amqp_prefetch=25
+      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
+      # - agent_docker_use_project=true  
+
+      - agent_oidc_userinfo_endpoint=http://api1:3000/oidc/me
+      - agent_oidc_issuer=http://localhost.openiap.io/oidc
+      - agent_oidc_authorization_endpoint=http://localhost.openiap.io/oidc/auth
+      - agent_oidc_token_endpoint=http://api1:3000/oidc/token
+
+      - amqp_url=amqp://guest:guest@rabbitmq1
+      - mongodb_url=mongodb://mongodb1:27017/?replicaSet=rs0
+      - mongodb_db=openflow
+
+      - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
+
+
+  mongodb2:
+    image: mongo
+    restart: always
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb2_data:/data/db
+  mongosetup2:
+    image: mongo
+    depends_on:
+      - mongodb2
+    restart: "no"
+    command: >
+      mongosh --host mongodb2:27017 --eval 
+      '
+      db = (new Mongo("mongodb2:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb2:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+  rabbitmq2:
+    image: rabbitmq
+    restart: always
+  api2:
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.passHostHeader=true
+      - traefik.http.routers.http-router2.entrypoints=web
+      - traefik.http.routers.http-router2.rule=Host(`localhost`)
+      - traefik.http.routers.http-router2.service=http-service2
+      - traefik.http.services.http-service2.loadbalancer.server.port=3000
+      - traefik.http.routers.grpc-router2.rule=Host(`grpc.localhost`)
+      - traefik.http.routers.grpc-router2.service=grpc-service2
+      - traefik.http.routers.grpc-router2.entrypoints=web
+      - traefik.http.services.grpc-service2.loadbalancer.server.port=50051
+      - traefik.http.services.grpc-service2.loadbalancer.server.scheme=h2c
+    image: openiap/openflow:edge
+    # ports:
+    #   - "5858:5858"
+    deploy:
+      replicas: 1
+    pull_policy: always
+    restart: always
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - rabbitmq2
+      - mongodb2
+    environment:
+      - auto_create_users=true
+      - auto_create_domains=
+      - websocket_package_size=25000
+      - websocket_max_package_count=1048576
+      - protocol=http
+      - port=3000
+      - domain=localhost
+      - log_with_colors=false
+      - api_ws_url=ws://localhost
+      - agent_apiurl=grpc://api2:50051
+      - agent_grpc_apihost=api2
+      - agent_ws_apihost=api2
+
+      # uncomment below 2 lines, if you have set replicas above 1
+      # - enable_openflow_amqp=true
+      # - amqp_prefetch=25
+      # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
+      # - agent_docker_use_project=true  
+
+      - agent_oidc_userinfo_endpoint=http://api2:3000/oidc/me
+      - agent_oidc_issuer=http://localhost/oidc
+      - agent_oidc_authorization_endpoint=http://localhost/oidc/auth
+      - agent_oidc_token_endpoint=http://api2:3000/oidc/token
+
+      - amqp_url=amqp://guest:guest@rabbitmq2
+      - mongodb_url=mongodb://mongodb2:27017/?replicaSet=rs0
+      - mongodb_db=openflow
+
+      - aes_secret=O1itlrmA47WzxPj95YHD2sZs7IchYaQI25mQ
+
+
+volumes:
+  mongodb1_data:
+    driver: local
+  mongodb2_data:
+    driver: local
