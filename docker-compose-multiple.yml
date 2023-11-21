@@ -55,9 +55,7 @@ services:
       - traefik.http.routers.grpc-router1.entrypoints=web
       - traefik.http.services.grpc-service1.loadbalancer.server.port=50051
       - traefik.http.services.grpc-service1.loadbalancer.server.scheme=h2c
-    image: openiap/openflow:edge
-    # ports:
-    #   - "5858:5858"
+    image: openiap/openflow
     deploy:
       replicas: 1
     pull_policy: always
@@ -143,9 +141,7 @@ services:
       - traefik.http.routers.grpc-router2.entrypoints=web
       - traefik.http.services.grpc-service2.loadbalancer.server.port=50051
       - traefik.http.services.grpc-service2.loadbalancer.server.scheme=h2c
-    image: openiap/openflow:edge
-    # ports:
-    #   - "5858:5858"
+    image: openiap/openflow
     deploy:
       replicas: 1
     pull_policy: always
