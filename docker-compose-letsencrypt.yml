@@ -83,12 +83,8 @@ services:
     environment:
       - auto_create_users=true
       - auto_create_domains=
-      - websocket_package_size=25000
-      - websocket_max_package_count=1048576
       - protocol=https
-      - port=3000
       - domain=localhost.openiap.io
-      - log_with_colors=false
 
       # uncomment below 2 lines, if you have set replicas above 1
       # - enable_openflow_amqp=true

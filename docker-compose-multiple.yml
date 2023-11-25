@@ -68,12 +68,7 @@ services:
     environment:
       - auto_create_users=true
       - auto_create_domains=
-      - websocket_package_size=25000
-      - websocket_max_package_count=1048576
-      - protocol=http
-      - port=3000
       - domain=localhost.openiap.io
-      - log_with_colors=false
       - api_ws_url=ws://localhost.openiap.io
       - agent_apiurl=grpc://api1:50051
       - agent_grpc_apihost=api1
@@ -155,12 +150,7 @@ services:
     environment:
       - auto_create_users=true
       - auto_create_domains=
-      - websocket_package_size=25000
-      - websocket_max_package_count=1048576
-      - protocol=http
-      - port=3000
       - domain=localhost
-      - log_with_colors=false
       - api_ws_url=ws://localhost
       - agent_apiurl=grpc://api2:50051
       - agent_grpc_apihost=api2

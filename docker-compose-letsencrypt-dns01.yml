@@ -94,15 +94,9 @@ services:
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"
     environment:
-      - multi_tenant=false
       - auto_create_users=true
       - auto_create_domains=
-      - websocket_package_size=25000
-      - websocket_max_package_count=1048576
       - protocol=https
-      - port=3000
-      - domain=localhost.openiap.io
-      - log_with_colors=false
 
       - agent_oidc_userinfo_endpoint=http://api:3000/oidc/me
       - agent_oidc_issuer=https://localhost.openiap.io/oidc
