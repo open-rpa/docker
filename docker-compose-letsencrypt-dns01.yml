@@ -96,6 +96,7 @@ services:
     environment:
       - auto_create_users=true
       - auto_create_domains=
+      - domain=localhost.openiap.io
       - protocol=https
 
       - agent_oidc_userinfo_endpoint=http://api:3000/oidc/me
