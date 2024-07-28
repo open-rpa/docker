@@ -1,4 +1,3 @@
-version: "3.3"
 services:
   traefik:
     image: traefik
@@ -9,11 +8,15 @@ services:
     ports:
       - "80:80"
     restart: always
+    networks:
+      - traefik
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock:ro"
   mongodb1:
     image: mongo
     restart: always
+    networks:
+      - traefik
     command: "--bind_ip_all --replSet rs0"
     environment:
       - MONGO_REPLICA_SET_NAME=rs0
@@ -24,6 +27,8 @@ services:
     depends_on:
       - mongodb1
     restart: "no"
+    networks:
+      - traefik
     command: >
       mongosh --host mongodb1:27017 --eval 
       '
@@ -42,6 +47,8 @@ services:
   rabbitmq1:
     image: rabbitmq
     restart: always
+    networks:
+      - traefik
   api1:
     labels:
       - traefik.enable=true
@@ -60,6 +67,8 @@ services:
       replicas: 1
     pull_policy: always
     restart: always
+    networks:
+      - traefik
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"
     depends_on:
@@ -93,6 +102,8 @@ services:
   mongodb2:
     image: mongo
     restart: always
+    networks:
+      - traefik
     command: "--bind_ip_all --replSet rs0"
     environment:
       - MONGO_REPLICA_SET_NAME=rs0
@@ -103,6 +114,8 @@ services:
     depends_on:
       - mongodb2
     restart: "no"
+    networks:
+      - traefik
     command: >
       mongosh --host mongodb2:27017 --eval 
       '
@@ -121,6 +134,8 @@ services:
   rabbitmq2:
     image: rabbitmq
     restart: always
+    networks:
+      - traefik
   api2:
     labels:
       - traefik.enable=true
@@ -139,6 +154,8 @@ services:
       replicas: 1
     pull_policy: always
     restart: always
+    networks:
+      - traefik
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"
     depends_on:
@@ -176,3 +193,6 @@ volumes:
     driver: local
   mongodb2_data:
     driver: local
+networks:
+  traefik:
+    name: traefik

@@ -1,5 +1,17 @@
-version: "3.3"
 services:
+  traefik:
+    image: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
   mongodb:
     image: mongo
     restart: always
@@ -8,6 +20,8 @@ services:
       - MONGO_REPLICA_SET_NAME=rs0
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - traefik
   mongosetup:
     image: mongo
     depends_on:
@@ -28,20 +42,13 @@ services:
       };
       rs.initiate(config);
       '
-  traefik:
-    image: traefik
-    command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-    restart: always
-    volumes:
-      - "//var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik
   rabbitmq:
     image: rabbitmq
     restart: always
+    networks:
+      - traefik
   api:
     labels:
       - traefik.enable=true
@@ -56,6 +63,8 @@ services:
       - traefik.http.services.grpc-service.loadbalancer.server.port=50051
       - traefik.http.services.grpc-service.loadbalancer.server.scheme=h2c
     image: openiap/openflow
+    networks:
+      - traefik
     ports:
       - "5858:5858"
     deploy:
@@ -91,3 +100,6 @@ services:
 volumes:
   mongodb_data:
     driver: local
+networks:
+  traefik:
+    name: traefik

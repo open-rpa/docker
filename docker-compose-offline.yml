@@ -1,8 +1,22 @@
-version: "3.3"
 services:
+  traefik:
+    image: localhost:5000/traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
   mongodb:
     image: mongo
     restart: always
+    networks:
+      - traefik
     command: "--bind_ip_all --replSet rs0"
     environment:
       - MONGO_REPLICA_SET_NAME=rs0
@@ -13,6 +27,8 @@ services:
     depends_on:
       - mongodb
     restart: "no"
+    networks:
+      - traefik
     command: >
       mongosh --host mongodb:27017 --eval 
       '
@@ -28,23 +44,16 @@ services:
       };
       rs.initiate(config);
       '
-  traefik:
-    image: localhost:5000/traefik
-    command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-    restart: always
-    volumes:
-      - "//var/run/docker.sock:/var/run/docker.sock:ro"
   rabbitmq:
     image: localhost:5000/rabbitmq:3-management
     restart: always
+    networks:
+      - traefik
   mqtt:
     image: localhost:5000/iegomez/mosquitto-go-auth
     restart: always
+    networks:
+      - traefik
     volumes:
       - "./mosquitto.conf:/etc/mosquitto/mosquitto.conf"
     ports:
@@ -57,6 +66,8 @@ services:
       - "traefik.http.services.verdaccio.loadbalancer.server.port=4873"
     image: localhost:5000/verdaccio/verdaccio
     restart: always
+    networks:
+      - traefik
     volumes:
       - "verdaccio_storage:/verdaccio/storage"
       # - "./offline/verdaccio/config:/verdaccio/conf"
@@ -78,6 +89,8 @@ services:
       replicas: 1
     pull_policy: always
     restart: always
+    networks:
+      - traefik
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"
     depends_on:
@@ -110,3 +123,6 @@ volumes:
     driver: local
   verdaccio_storage:
     driver: local
+networks:
+  traefik:
+    name: traefik

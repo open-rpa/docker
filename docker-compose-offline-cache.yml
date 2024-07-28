@@ -1,4 +1,3 @@
-version: "3.3"
 services:
 # if using prox/remoteurl then open /etc/docker/daemon.json and add the following ( not offline mode ! )
 # {
@@ -9,6 +8,8 @@ services:
 # sudo systemctl restart docker
   registry:
     restart: always
+    networks:
+      - traefik
     ports:
       - 5000:5000
     image: registry:2
@@ -18,3 +19,6 @@ services:
 volumes:
   registry_cache:
     driver: local
+networks:
+  traefik:
+    name: traefik

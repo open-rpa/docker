@@ -1,8 +1,23 @@
-version: "3.4"
 services:
+  traefik:
+    image: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"
   mongodb:
     image: mongo
     restart: always
+    networks:
+      - traefik
     command: "--bind_ip_all --replSet rs0"
     environment:
       - MONGO_REPLICA_SET_NAME=rs0
@@ -13,6 +28,8 @@ services:
     depends_on:
       - mongodb
     restart: "no"
+    networks:
+      - traefik
     command: >
       mongosh --host mongodb:27017 --eval 
       '
@@ -28,18 +45,6 @@ services:
       };
       rs.initiate(config);
       '
-  traefik:
-    image: traefik
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-    restart: always
-    volumes:
-      - "//var/run/docker.sock:/var/run/docker.sock:ro"
   rabbitmq:
     labels:
       - "traefik.enable=true"
@@ -48,14 +53,22 @@ services:
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
     image: rabbitmq:3-management
     restart: always
+    networks:
+      - traefik
   redis:
     image: redis
+    restart: always
+    networks:
+      - traefik
     command: >
       --requirepass pass!word2
   otel-collector:
     image: otel/opentelemetry-collector
     command: >
       - "--config=/conf/otel-collector-config.yaml"
+    restart: always
+    networks:
+      - traefik
     volumes:
       - ./otel-collector-config.yaml:/conf/otel-collector-config.yaml
   victoriametrics:
@@ -64,6 +77,9 @@ services:
       - otel-collector
     command:
       - "--selfScrapeInterval=10s"
+    restart: always
+    networks:
+      - traefik
     volumes:
       - victoriametrics_data:/victoria-metrics-data
   grafana:
@@ -74,6 +90,8 @@ services:
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
     image: openiap/grafana
     restart: always
+    networks:
+      - traefik
     depends_on:
       - api
     environment:
@@ -116,6 +134,8 @@ services:
       replicas: 1
     pull_policy: always
     restart: always
+    networks:
+      - traefik
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"
     depends_on:
@@ -157,3 +177,6 @@ volumes:
     driver: local
   grafana_data:
     driver: local
+networks:
+  traefik:
+    name: traefik

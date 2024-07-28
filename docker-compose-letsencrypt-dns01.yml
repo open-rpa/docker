@@ -1,33 +1,4 @@
-version: "3.3"
 services:
-  mongodb:
-    image: mongo
-    restart: always
-    command: "--bind_ip_all --replSet rs0"
-    environment:
-      - MONGO_REPLICA_SET_NAME=rs0
-    volumes:
-      - mongodb_data:/data/db
-  mongosetup:
-    image: mongo
-    depends_on:
-      - mongodb
-    restart: "no"
-    command: >
-      mongosh --host mongodb:27017 --eval 
-      '
-      db = (new Mongo("mongodb:27017")).getDB("openflow");
-      config = {
-      "_id" : "rs0",
-      "members" : [
-        {
-          "_id" : 0,
-          "host" : "mongodb:27017"
-        }
-      ]
-      };
-      rs.initiate(config);
-      '
   traefik:
     image: traefik
     command:
@@ -61,9 +32,43 @@ services:
       - "80:80"
       - "443:443"
     restart: always
+    networks:
+      - traefik
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "//var/run/docker.sock:/var/run/docker.sock:ro"
+  mongodb:
+    image: mongo
+    restart: always
+    networks:
+      - traefik
+    command: "--bind_ip_all --replSet rs0"
+    environment:
+      - MONGO_REPLICA_SET_NAME=rs0
+    volumes:
+      - mongodb_data:/data/db
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongodb
+    restart: "no"
+    networks:
+      - traefik
+    command: >
+      mongosh --host mongodb:27017 --eval 
+      '
+      db = (new Mongo("mongodb:27017")).getDB("openflow");
+      config = {
+      "_id" : "rs0",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongodb:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
   rabbitmq:
     labels:
       - "traefik.enable=true"
@@ -73,6 +78,8 @@ services:
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
     image: rabbitmq:3-management
     restart: always
+    networks:
+      - traefik
   api:
     labels:
       - "traefik.enable=true"
@@ -88,6 +95,8 @@ services:
       replicas: 1
     pull_policy: always
     restart: always
+    networks:
+      - traefik
     depends_on:
       - rabbitmq
       - mongodb
@@ -120,3 +129,6 @@ services:
 volumes:
   mongodb_data:
     driver: local
+networks:
+  traefik:
+    name: traefik
