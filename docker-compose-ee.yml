@@ -6,6 +6,10 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      # **Timeout settings for gRPC**
+      # - "--entrypoints.web.transport.respondingTimeouts.readTimeout=90000s"
+      # - "--entrypoints.web.transport.respondingTimeouts.writeTimeout=90000s"
+      # - "--entrypoints.web.transport.lifeCycle.requestAcceptGraceTimeout=90000s"
     ports:
       - "80:80"
     restart: always

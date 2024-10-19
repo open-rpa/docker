@@ -20,6 +20,10 @@ services:
       # - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
       # - "traefik.http.routers.redirs.entrypoints=web"
       # - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+      # **Timeout settings for gRPC**
+      # - "--entrypoints.websecure.transport.respondingTimeouts.readTimeout=90000s"
+      # - "--entrypoints.websecure.transport.respondingTimeouts.writeTimeout=90000s"
+      # - "--entrypoints.websecure.transport.lifeCycle.requestAcceptGraceTimeout=90000s"
     environment:
       - CLOUDFLARE_EMAIL_FILE=/letsencrypt/CF_EMAIL.txt
       - CLOUDFLARE_API_KEY_FILE=/letsencrypt/CF_KEY.txt
