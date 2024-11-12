@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik
+    image: traefik:v2.10.6
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"

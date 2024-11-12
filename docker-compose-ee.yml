@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik
+    image: traefik:v2.10.6
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -102,8 +102,8 @@ services:
     - GF_AUTH_GENERIC_OAUTH_ENABLED=true
     - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
     - GF_AUTH_GENERIC_OAUTH_NAME=OpenFlow
-    - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=application
-    - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=secret
+    - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=openapi
+    - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=openapi
     - GF_AUTH_GENERIC_OAUTH_SCOPES=openid offline_access
     - GF_AUTH_GENERIC_OAUTH_EMAIL_ATTRIBUTE_PATH=email
     - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH=role
