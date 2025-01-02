@@ -79,8 +79,6 @@ services:
       - rabbitmq1
       - mongodb1
     environment:
-      - auto_create_users=true
-      - auto_create_domains=
       - domain=localhost.openiap.io
       - api_ws_url=ws://localhost.openiap.io
       - agent_apiurl=grpc://api1:50051
@@ -166,8 +164,6 @@ services:
       - rabbitmq2
       - mongodb2
     environment:
-      - auto_create_users=true
-      - auto_create_domains=
       - domain=localhost
       - api_ws_url=ws://localhost
       - agent_apiurl=grpc://api2:50051

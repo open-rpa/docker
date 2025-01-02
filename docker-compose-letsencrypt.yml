@@ -94,8 +94,6 @@ services:
       - rabbitmq
       - mongodb
     environment:
-      - auto_create_users=true
-      - auto_create_domains=
       - protocol=https
       - domain=localhost.openiap.io
 

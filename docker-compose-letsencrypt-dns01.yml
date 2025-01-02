@@ -107,8 +107,6 @@ services:
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"
     environment:
-      - auto_create_users=true
-      - auto_create_domains=
       - domain=localhost.openiap.io
       - protocol=https
 

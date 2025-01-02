@@ -81,8 +81,6 @@ services:
       - rabbitmq
       - mongodb
     environment:
-      - auto_create_users=true
-      - auto_create_domains=
       - domain=localhost.openiap.io
 
       # uncomment below 2 lines, if you have set replicas above 1

@@ -148,8 +148,6 @@ services:
       - redis
     environment:
       - otel_metric_url=http://otel-collector:4317
-      - auto_create_users=true
-      - auto_create_domains=
       - domain=localhost.openiap.io
 
       # uncomment below 2 lines, if you have set replicas above 1
