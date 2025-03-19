@@ -136,7 +136,6 @@ services:
     image: openiap/openflow
     deploy:
       replicas: 1
-    pull_policy: always
     restart: always
     networks:
       - traefik

@@ -73,7 +73,6 @@ services:
       - "5858:5858"
     deploy:
       replicas: 1
-    pull_policy: always
     restart: always
     volumes:
       - "//var/run/docker.sock:/var/run/docker.sock"

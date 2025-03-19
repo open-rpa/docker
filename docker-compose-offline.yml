@@ -91,7 +91,6 @@ services:
     image: localhost:5000/openiap/openflow
     deploy:
       replicas: 1
-    pull_policy: always
     restart: always
     networks:
       - traefik
