@@ -95,7 +95,7 @@ services:
       - agent_oidc_authorization_endpoint=http://localhost.openiap.io/oidc/auth
       - agent_oidc_token_endpoint=http://api1:3000/oidc/token
 
-      - amqp_url=amqp://guest:guest@rabbitmq1
+      - amqp_url=amqp://guest:guest@rabbitmq1?frameMax=0x2000
       - mongodb_url=mongodb://mongodb1:27017/?replicaSet=rs0
       - mongodb_db=openflow
 
@@ -179,7 +179,7 @@ services:
       - agent_oidc_authorization_endpoint=http://localhost/oidc/auth
       - agent_oidc_token_endpoint=http://api2:3000/oidc/token
 
-      - amqp_url=amqp://guest:guest@rabbitmq2
+      - amqp_url=amqp://guest:guest@rabbitmq2?frameMax=0x2000
       - mongodb_url=mongodb://mongodb2:27017/?replicaSet=rs0
       - mongodb_db=openflow
 

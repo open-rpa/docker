@@ -155,7 +155,7 @@ services:
       # uncomment to add agents to the same docker compose project ( will breake running docker compose up -d if any agents running )
       # - agent_docker_use_project=true  
 
-      - amqp_url=amqp://guest:guest@rabbitmq
+      - amqp_url=amqp://guest:guest@rabbitmq?frameMax=0x2000
       - mongodb_url=mongodb://mongodb:27017
       - mongodb_db=openflow
 

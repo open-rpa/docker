@@ -109,7 +109,7 @@ services:
       - agent_docker_entrypoints=web,websecure
       - agent_docker_certresolver=myresolver
 
-      - amqp_url=amqp://guest:guest@rabbitmq
+      - amqp_url=amqp://guest:guest@rabbitmq?frameMax=0x2000
       - mongodb_url=mongodb://mongodb:27017/?replicaSet=rs0
       - mongodb_db=openflow
 
